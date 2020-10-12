@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;
 
+// TODO: Implement dictionary loading and dictionary utilities
+// TODO: add unit testing
 public class DictionaryHelper {
 	public String loadDictionary(Path dictionaryPath) {
 		ObjectMapper mapper = new ObjectMapper();

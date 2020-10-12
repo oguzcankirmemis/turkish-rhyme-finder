@@ -26,6 +26,11 @@ public class Word {
 		return meanings;
 	}
 	
+	// TODO: add unit test for this method
+	public char[] getCharacters() {
+		return word.toCharArray();
+	}
+	
 	public char[] getReversedCharacters() {
 		char[] reversedChars = new char[word.length()];
 		for (int i = 0; i < reversedChars.length; i++) {
