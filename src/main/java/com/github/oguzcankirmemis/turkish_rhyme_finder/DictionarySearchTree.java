@@ -24,10 +24,10 @@ public class DictionarySearchTree {
 		this.root = root;
 		elements = new ArrayList<DictionarySearchTree>();
 		this.character = character;
-		level = root.getLevel() + 1;
-		isReversed = root.isReversed();
+		level = this.root.getLevel() + 1;
+		isReversed = this.root.isReversed();
 		words = null;
-		modus = root.getModus();
+		modus = this.root.getModus();
 	}
 	
 	public DictionarySearchTree(boolean isReversed, SearchModus modus) {
@@ -52,6 +52,18 @@ public class DictionarySearchTree {
 		return modus;
 	}
 	
+	private char getCharacter() {
+		return character;
+	}
+	
+	private List<Word> getWords() {
+		if (words == null) {
+			return new ArrayList<Word>();
+		} else {
+			return words;
+		}
+	}
+	
 	private static boolean isVowel(char character) {
 		for (char v : VOWELS) {
 			if (v == character) {
@@ -74,12 +86,12 @@ public class DictionarySearchTree {
 		}
 		if (modus == SearchModus.OnlyVowels) {
 			if (!isVowel(characters[index])) {
-				this.addWord(w, characters, index + 1);
+				addWord(w, characters, index + 1);
 				return;
 			}
 		}
 		for (DictionarySearchTree tree : elements) {
-			if (tree.character == characters[index]) {
+			if (tree.getCharacter() == characters[index]) {
 				tree.addWord(w, characters, index++);
 				return;
 			}
@@ -97,16 +109,20 @@ public class DictionarySearchTree {
 		}
 	}
 	
-	private boolean containsValidWord() {
-		return words != null && !words.isEmpty();
-	}
-	
 	private List<Word> searchWords(List<Word> results, char[] prefix, int index, int depth) {
 		if (depth < level) {
 			return results;
 		}
+		if (modus == SearchModus.OnlyVowels) {
+			if (!isVowel(prefix[index])) {
+				return searchWords(results, prefix, index + 1, depth);
+			}
+		}
 		for (DictionarySearchTree subtree : elements) {
-			// TODO: implement searching algorithm
+			if (subtree.getCharacter() == prefix[index]) {
+				results.addAll(subtree.getWords());
+				return subtree.searchWords(results, prefix, index + 1, depth);
+			}
 		}
 		return results;
 	}
@@ -116,6 +132,10 @@ public class DictionarySearchTree {
 			return null;
 		}
 		List<Word> results = new ArrayList<Word>();
+		if (isReversed) {
+			StringBuilder sb = new StringBuilder(prefix);
+			return searchWords(results, sb.reverse().toString().toCharArray(), 0, depth);
+		}
 		return searchWords(results, prefix.toCharArray(), 0, depth);
 	}
 }
