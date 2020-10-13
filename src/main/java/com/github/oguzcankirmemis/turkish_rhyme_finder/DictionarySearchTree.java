@@ -40,6 +40,17 @@ public class DictionarySearchTree {
 		this.modus = modus;
 	}
 	
+	public DictionarySearchTree(boolean isReversed, SearchModus modus, Dictionary dictionary) {
+		root = null;
+		elements =  new ArrayList<DictionarySearchTree>();
+		character = ROOT_CHARACTER;
+		level = 0;
+		this.isReversed = isReversed;
+		words = null;
+		this.modus = modus;
+		addDictionary(dictionary);
+	}
+	
 	public boolean isReversed() {
 		return isReversed;
 	}
@@ -106,6 +117,12 @@ public class DictionarySearchTree {
 			addWord(w, w.getCharacters(), 0);
 		} else {
 			addWord(w, w.getReversedCharacters(), 0);
+		}
+	}
+	
+	public void addDictionary(Dictionary dictionary) {
+		for (Word w : dictionary.getWords()) {
+			addWord(w);
 		}
 	}
 	
