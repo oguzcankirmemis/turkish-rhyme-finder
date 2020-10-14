@@ -1,19 +1,22 @@
 package com.github.oguzcankirmemis.turkish_rhyme_finder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.oguzcankirmemis.turkish_rhyme_finder.DictionarySearchTree.SearchModus;
 
 // TODO: add unit tests for whole class
-public class Dictionary {
+public class Dictionary implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final int PERCENTAGE_LOGGING_THRESHOLD = 10;
+	private static final int DEFAULT_SEARCH_DEPTH = 50;
 	
-	List<Word> words;
-	DictionarySearchTree wholeWord;
-	DictionarySearchTree wholeWordReversed;
-	DictionarySearchTree onlyVowels;
-	DictionarySearchTree onlyVowelsReversed;
+	private List<Word> words;
+	private DictionarySearchTree wholeWord;
+	private DictionarySearchTree wholeWordReversed;
+	private DictionarySearchTree onlyVowels;
+	private DictionarySearchTree onlyVowelsReversed;
 	
 	public Dictionary() {
 		words = new ArrayList<>();
@@ -30,34 +33,101 @@ public class Dictionary {
 		return words;
 	}
 	
-	public DictionarySearchTree getSearchTree(boolean isReversed, SearchModus modus) {
+	public DictionarySearchTree getSearchTree(SearchModus modus) {
 		switch(modus) {
-			case OnlyVowels:
-				if (isReversed) {
-					if (onlyVowelsReversed == null) {
-						onlyVowelsReversed = new DictionarySearchTree(isReversed, modus, this);
-					}
-					return onlyVowelsReversed;
-				} else {
-					if (onlyVowels == null) {
-						onlyVowels = new DictionarySearchTree(isReversed, modus, this);
-					}
-					return onlyVowels;
-				}
-			case WholeWord:
-			default:
-				if (isReversed) {
-					if (wholeWordReversed == null) {
-						wholeWordReversed = new DictionarySearchTree(isReversed, modus, this);
-					}
-					return wholeWordReversed;
-				} else  {
-					if (wholeWord == null) {
-						wholeWord = new DictionarySearchTree(isReversed, modus, this);
-					}
-					return wholeWord;
-				}
+		case OnlyVowelsReversed:
+			return onlyVowelsReversed;
+		case OnlyVowels:
+			return onlyVowels;
+		case WholeWordReversed:
+			return wholeWordReversed;
+		case WholeWord:
+		default:
+			return wholeWord;
 		}
+	}
+	
+	public DictionarySearchTree generateSearchTree(SearchModus modus) {
+		switch(modus) {
+		case OnlyVowelsReversed:
+			if (onlyVowelsReversed == null) {
+				onlyVowelsReversed = new DictionarySearchTree(modus, this);
+			}
+			return onlyVowelsReversed;
+		case OnlyVowels:
+			if (onlyVowels == null) {
+				onlyVowels = new DictionarySearchTree(modus, this);
+			}
+			return onlyVowels;
+		case WholeWordReversed:
+			if (wholeWordReversed == null) {
+				wholeWordReversed = new DictionarySearchTree(modus, this);
+			}
+			return wholeWordReversed;
+		case WholeWord:
+		default:
+			if (wholeWord == null) {
+				wholeWord = new DictionarySearchTree(modus, this);
+			}
+			return wholeWord;
+		}
+	}
+	
+	public DictionarySearchTree resetSearchTree(SearchModus modus) {
+		switch(modus) {
+		case OnlyVowelsReversed:
+			return onlyVowelsReversed = new DictionarySearchTree(modus, this);
+		case OnlyVowels:
+			return onlyVowels = new DictionarySearchTree(modus, this);
+		case WholeWordReversed:
+			return wholeWordReversed = new DictionarySearchTree(modus, this);
+		case WholeWord:
+		default:
+			return wholeWord = new DictionarySearchTree(modus, this);
+		}
+	}
+	
+	public void resetSearchTrees() {
+		resetSearchTree(SearchModus.OnlyVowelsReversed);
+		resetSearchTree(SearchModus.OnlyVowels);
+		resetSearchTree(SearchModus.WholeWordReversed);
+		resetSearchTree(SearchModus.WholeWord);
+	}
+	
+	public boolean deleteSearchTree(SearchModus modus) {
+		switch(modus) {
+		case OnlyVowelsReversed:
+			if (onlyVowelsReversed != null) {
+				onlyVowelsReversed = null;
+				return true;
+			}
+		case OnlyVowels:
+			if (onlyVowels != null) {
+				onlyVowels = null;
+				return true;
+			}
+		case WholeWordReversed:
+			if (wholeWordReversed != null) {
+				wholeWordReversed = null;
+				return true;
+			}
+		case WholeWord:
+		default:
+			if (wholeWord != null) {
+				wholeWord = null;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public List<Word> searchWord(SearchModus modus, String searchInput, int depth) {
+		DictionarySearchTree dst = generateSearchTree(modus);
+		return dst.searchWords(searchInput, depth);
+	}
+	
+	public List<Word> searchWord(SearchModus modus, String searchInput) {
+		return searchWord(modus, searchInput, DEFAULT_SEARCH_DEPTH);
 	}
 	
 	private void addVerbsWithoutInfinitiveAttachments() {

@@ -11,13 +11,14 @@ public class DictionarySearchTree {
 	private List<DictionarySearchTree> elements;
 	private char character;
 	private int level;
-	private boolean isReversed;
 	private List<Word> words;
 	private SearchModus modus;
 	
 	enum SearchModus {
 		WholeWord,
-		OnlyVowels
+		WholeWordReversed,
+		OnlyVowels,
+		OnlyVowelsReversed
 	}
 	
 	private DictionarySearchTree(DictionarySearchTree root, char character) {
@@ -25,34 +26,37 @@ public class DictionarySearchTree {
 		elements = new ArrayList<DictionarySearchTree>();
 		this.character = character;
 		level = this.root.getLevel() + 1;
-		isReversed = this.root.isReversed();
 		words = null;
 		modus = this.root.getModus();
 	}
 	
-	public DictionarySearchTree(boolean isReversed, SearchModus modus) {
+	public DictionarySearchTree(SearchModus modus) {
 		root = null;
 		elements =  new ArrayList<DictionarySearchTree>();
 		character = ROOT_CHARACTER;
 		level = 0;
-		this.isReversed = isReversed;
 		words = null;
 		this.modus = modus;
 	}
 	
-	public DictionarySearchTree(boolean isReversed, SearchModus modus, Dictionary dictionary) {
+	public DictionarySearchTree(SearchModus modus, Dictionary dictionary) {
 		root = null;
 		elements =  new ArrayList<DictionarySearchTree>();
 		character = ROOT_CHARACTER;
 		level = 0;
-		this.isReversed = isReversed;
 		words = null;
 		this.modus = modus;
 		addDictionary(dictionary);
 	}
 	
 	public boolean isReversed() {
-		return isReversed;
+		return modus == SearchModus.WholeWordReversed ||
+				modus == SearchModus.OnlyVowelsReversed;
+	}
+	
+	public boolean onlyVowels() {
+		return modus == SearchModus.OnlyVowels ||
+				modus == SearchModus.OnlyVowels;
 	}
 	
 	public int getLevel() {
@@ -113,7 +117,7 @@ public class DictionarySearchTree {
 	}
 	
 	public void addWord(Word w) {
-		if (isReversed) {
+		if (this.isReversed()) {
 			addWord(w, w.getCharacters(), 0);
 		} else {
 			addWord(w, w.getReversedCharacters(), 0);
@@ -130,7 +134,7 @@ public class DictionarySearchTree {
 		if (depth < level) {
 			return results;
 		}
-		if (modus == SearchModus.OnlyVowels) {
+		if (this.onlyVowels()) {
 			if (!isVowel(prefix[index])) {
 				return searchWords(results, prefix, index + 1, depth);
 			}
@@ -149,7 +153,7 @@ public class DictionarySearchTree {
 			return null;
 		}
 		List<Word> results = new ArrayList<Word>();
-		if (isReversed) {
+		if (this.isReversed()) {
 			StringBuilder sb = new StringBuilder(prefix);
 			return searchWords(results, sb.reverse().toString().toCharArray(), 0, depth);
 		}
