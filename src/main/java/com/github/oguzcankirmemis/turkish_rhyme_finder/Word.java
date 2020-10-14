@@ -1,20 +1,23 @@
 package com.github.oguzcankirmemis.turkish_rhyme_finder;
 
-import java.util.List;
-
 public class Word {
 	private final static int INFINITIVE_LENGTH = 3;
 	private final static String INFINITIVE1 = "mek";
 	private final static String INFINITIVE2 = "mak";
 	
 	private String word;
-	private List<String> meanings;
+	private String[] meanings;
 	
-	public Word(String word, List<String> meanings) {
+	public Word() {
+		word = "";
+		meanings = new String[0];
+	}
+	
+	public Word(String word, String[] meanings) {
 		this.word = word.toLowerCase();
 		this.meanings = meanings;
-		for (int i = 0; i < meanings.size(); i++) {
-			meanings.set(i, meanings.get(i).toLowerCase());
+		for (int i = 0; i < meanings.length; i++) {
+			meanings[i] = meanings[i].toLowerCase();
 		}
 	}
 	
@@ -22,7 +25,7 @@ public class Word {
 		return word;
 	}
 	
-	public List<String> getMeanings() {
+	public String[] getMeanings() {
 		return meanings;
 	}
 	
@@ -61,11 +64,11 @@ public class Word {
 		if (!attachment.equals(INFINITIVE1) && !attachment.equals(INFINITIVE2)) {
 			return false;
 		} else {
-			if (meanings.size() == 0) {
+			if (meanings.length == 0) {
 				return true;
 			} else {
-				for (int i = 0; i < meanings.size(); i++) {
-					String meaning = meanings.get(i);
+				for (int i = 0; i < meanings.length; i++) {
+					String meaning = meanings[i];
 					String meaningAttachment = meaning.substring(
 							meaning.length() - 3, meaning.length());
 					if (meaningAttachment.equals(INFINITIVE1) || meaningAttachment.equals(INFINITIVE2)) {
@@ -93,9 +96,9 @@ public class Word {
 		StringBuilder sb = new StringBuilder();
 		sb.append(word);
 		sb.append(": ");
-		for (int i = 0; i < meanings.size(); i++) {
-			sb.append(meanings.get(i));
-			if (i != meanings.size() - 1) {
+		for (int i = 0; i < meanings.length; i++) {
+			sb.append(meanings[i]);
+			if (i != meanings.length - 1) {
 				sb.append(", ");
 			}
 		}

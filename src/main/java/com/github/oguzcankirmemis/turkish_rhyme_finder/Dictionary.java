@@ -1,5 +1,6 @@
 package com.github.oguzcankirmemis.turkish_rhyme_finder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.oguzcankirmemis.turkish_rhyme_finder.DictionarySearchTree.SearchModus;
@@ -13,6 +14,10 @@ public class Dictionary {
 	DictionarySearchTree wholeWordReversed;
 	DictionarySearchTree onlyVowels;
 	DictionarySearchTree onlyVowelsReversed;
+	
+	public Dictionary() {
+		words = new ArrayList<>();
+	}
 	
 	public Dictionary(List<Word> words, boolean addVerbsWithoutInfinitive) {
 		this.words = words;
@@ -61,19 +66,23 @@ public class Dictionary {
 		int processCounter = 1;
 		int addedNewWords = 0;
 		int wordsInitLen = words.size();
+		List<Word> newWords = new ArrayList<Word>();
 		for (int i = 0; i < wordsInitLen; i++) {
-			if (wordsInitLen >= PERCENTAGE_LOGGING_THRESHOLD && ((double) wordsInitLen) / i >= 
-					((double) PERCENTAGE_LOGGING_THRESHOLD) / processCounter) {
-				processCounter++;
+			while (wordsInitLen >= PERCENTAGE_LOGGING_THRESHOLD && (i + 1) / ((double) wordsInitLen) >= 
+					(((double) PERCENTAGE_LOGGING_THRESHOLD) / 100) * processCounter) {
 				System.out.println(processCounter * 10 + "% processed...");
+				processCounter++;
 			}
 			Word w = words.get(i);
 			if (w.isVerb()) {
 				Word verb = w.getVerbWithoutAttachment();
-				words.add(verb);
+				newWords.add(verb);
 				addedNewWords++;
 			}
 		}
+		System.out.println("Found " + addedNewWords + 
+				" in total, adding them all to dictionary");
+		words.addAll(newWords);
 		System.out.println("Added " + addedNewWords + 
 				" verbs without their attachments in total.");
 	}

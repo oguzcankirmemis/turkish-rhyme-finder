@@ -24,7 +24,7 @@ public class WordTest {
 		meanings.add(meaning1);
 		meanings.add(meaning2);
 		meanings.add(meaning3);
-		return new Word(word, meanings);
+		return new Word(word, meanings.toArray(new String[] {}));
 	}
 	
 	private Word getTestVerb() {
@@ -32,7 +32,7 @@ public class WordTest {
 		meanings.add(verbMeaning1);
 		meanings.add(verbMeaning2);
 		meanings.add(verbMeaning3);
-		return new Word(verb, meanings);
+		return new Word(verb, meanings.toArray(new String[] {}));
 	}
 	
 	@Test
@@ -44,11 +44,11 @@ public class WordTest {
 	@Test
 	public void shouldGetMeanings() {
 		Word w = getTestWord();
-		List<String> meanings = w.getMeanings();
-		Assertions.assertEquals(3, meanings.size());
-		Assertions.assertEquals(meaning1, meanings.get(0));
-		Assertions.assertEquals(meaning2, meanings.get(1));
-		Assertions.assertEquals(meaning3, meanings.get(2));
+		String[] meanings = w.getMeanings();
+		Assertions.assertEquals(3, meanings.length);
+		Assertions.assertEquals(meaning1, meanings[0]);
+		Assertions.assertEquals(meaning2, meanings[1]);
+		Assertions.assertEquals(meaning3, meanings[2]);
 	}
 	
 	@Test
@@ -92,12 +92,12 @@ public class WordTest {
 	@Test
 	public void shouldGetVerbWithoutAttachment() {
 		Word w = getTestVerb();
-		List<String> meanings = w.getMeanings();
+		String[] meanings = w.getMeanings();
 		Assertions.assertEquals(verbWithoutAttachment, w.getVerbWithoutAttachment().getWord());
-		Assertions.assertEquals(3, meanings.size());
-		Assertions.assertEquals(verbMeaning1, meanings.get(0));
-		Assertions.assertEquals(verbMeaning2, meanings.get(1));
-		Assertions.assertEquals(verbMeaning3, meanings.get(2));
+		Assertions.assertEquals(3, meanings.length);
+		Assertions.assertEquals(verbMeaning1, meanings[0]);
+		Assertions.assertEquals(verbMeaning2, meanings[1]);
+		Assertions.assertEquals(verbMeaning3, meanings[2]);
 	}
 	
 	@Test
